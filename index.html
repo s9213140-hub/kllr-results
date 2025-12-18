@@ -19,10 +19,31 @@
   
 
 </body>
-  <script>
-function checkResult() {
+<script>
+async function checkResult() {
   const num = document.getElementById("last4").value;
-  document.getElementById("result").innerText = "You entered: " + num;
+  const date = "2025-12-10"; // fixed for now
+  const url = https://raw.githubusercontent.com/s9213140-hub/kl1r-results/main/data/${date}.json;
+
+  document.getElementById("result").innerText = "Checking result...";
+
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+
+    // Check if the number matches
+    if (data.firstPrize.last4 === num) {
+      document.getElementById("result").innerText = "🥳 First Prize Winner!";
+    } else if (data.prizesLast4[num]) {
+      const prizeInfo = data.prizesLast4[num];
+      document.getElementById("result").innerText =
+        🎉 ${prizeInfo.prize} Prize — ${prizeInfo.amount};
+    } else {
+      document.getElementById("result").innerText = "😢 No prize found.";
+    }
+  } catch (err) {
+    document.getElementById("result").innerText = "Error loading results.";
+  }
 }
 </script>
 </html>

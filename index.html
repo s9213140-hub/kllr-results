@@ -24,21 +24,32 @@
 async function checkResult() {
   const date = document.getElementById("date").value;
   const last4 = document.getElementById("last4").value;
+  const resultEl = document.getElementById("result");
 
-  document.getElementById("result").innerText = "Checking result...";
+  resultEl.innerText = "Checking result...";
 
-  const response = await fetch(data/${date}.json);
-  const data = await response.json();
+  try {
+    const response = await fetch(./data/${date}.json);
 
-  if (data.firstPrize.last4 === last4) {
-    document.getElementById("result").innerText =
-      "🎉 First Prize! Number ഒന്നു അടിച്ചു!";
-  } else if (data.prizesLast4[last4]) {
-    document.getElementById("result").innerText =
-      You won ${data.prizesLast4[last4].prize} prize – ₹${data.prizesLast4[last4].amount};
-  } else {
-    document.getElementById("result").innerText =
-      "No prize for this number 😔";
+    if (!response.ok) {
+      throw new Error("Result file not found");
+    }
+
+    const data = await response.json();
+
+    if (data.firstPrize.last4 === last4) {
+      resultEl.innerText = "🎉 ചെറുത് ഒന്നു അടിച്ചു!";
+    } 
+    else if (data.prizesLast4[last4]) {
+      resultEl.innerText =
+        Prize won: ${data.prizesLast4[last4].prize} – ₹${data.prizesLast4[last4].amount};
+    } 
+    else {
+      resultEl.innerText = "Sawari girigiri 😌 No prize";
+    }
+
+  } catch (err) {
+    resultEl.innerText = "❌ Result not available for this date";
   }
 }
 </script>

@@ -21,28 +21,44 @@
 </body>
 <script>
 async function checkResult() {
-  const num = document.getElementById("last4").value;
-  const date = "2025-12-10"; // fixed for now
-  const url = https://raw.githubusercontent.com/s9213140-hub/kl1r-results/main/data/${date}.json;
+  const date = document.getElementById("date").value;
+  const last4 = document.getElementById("last4").value;
+  const resultDiv = document.getElementById("result");
 
-  document.getElementById("result").innerText = "Checking result...";
+  if (!date || !last4) {
+    resultDiv.innerText = "Dateയും നമ്പറും കൊടുക്കണം";
+    return;
+  }
+
+  resultDiv.innerText = "Checking result...";
 
   try {
+    const url = https://raw.githubusercontent.com/s9213140-hub/klr-results/main/data/${date}.json;
     const res = await fetch(url);
+
+    if (!res.ok) {
+      resultDiv.innerText = "Result കിട്ടിയില്ല";
+      return;
+    }
+
     const data = await res.json();
 
-    // Check if the number matches
-    if (data.firstPrize.last4 === num) {
-      document.getElementById("result").innerText = "🥳 First Prize Winner!";
-    } else if (data.prizesLast4[num]) {
-      const prizeInfo = data.prizesLast4[num];
-      document.getElementById("result").innerText =
-        🎉 ${prizeInfo.prize} Prize — ${prizeInfo.amount};
-    } else {
-      document.getElementById("result").innerText = "😢 No prize found.";
+    // First prize check (last 4)
+    if (data.firstPrize.last4 === last4) {
+      resultDiv.innerText = "നമ്പർ ഒന്ന് അടിച്ചു 🔥";
+      return;
     }
-  } catch (err) {
-    document.getElementById("result").innerText = "Error loading results.";
+
+    // Other prizes
+    if (data.prizesLast4[last4]) {
+      const prize = data.prizesLast4[last4];
+      resultDiv.innerText = Prize: ${prize.prize} | Amount: ${prize.amount};
+      return;
+    }
+
+    resultDiv.innerText = "സവാരി ഗിരിഗിരി 😌";
+  } catch (e) {
+    resultDiv.innerText = "Error ഉണ്ടായി";
   }
 }
 </script>

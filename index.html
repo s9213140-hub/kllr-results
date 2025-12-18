@@ -21,39 +21,8 @@
 
 </body>
 <script>
-async function checkResult() {
-  const date = document.getElementById("date").value;
-  const last4 = document.getElementById("last4").value;
-  const result = document.getElementById("result");
-
-  result.innerText = "Checking result...";
-
-  try {
-    const url = https://raw.githubusercontent.com/s9213140-hub/klr-results/main/data/${date}.json;
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      result.innerText = "❌ No data found for this date";
-      return;
-    }
-
-    const data = await response.json();
-
-    if (data.firstPrize.last4 === last4) {
-      result.innerText = "🎉 JACKPOT! First Prize 🎉";
-      return;
-    }
-
-    if (data.prizesLast4[last4]) {
-      const prize = data.prizesLast4[last4];
-      result.innerText = ✅ Prize Won: ${prize.prize} – ₹${prize.amount};
-      return;
-    }
-
-    result.innerText = "❌ Sorry, no prize";
-  } catch (e) {
-    result.innerText = "⚠️ Error loading data";
-  }
+function checkResult() {
+  alert("Button clicked");
 }
 </script>
 </html>

@@ -21,10 +21,25 @@
 
 </body>
 <script>
-  function checkResult() {
-    const last4 = document.getElementById("last4").value;
+async function checkResult() {
+  const date = document.getElementById("date").value;
+  const last4 = document.getElementById("last4").value;
+
+  document.getElementById("result").innerText = "Checking result...";
+
+  const response = await fetch(data/${date}.json);
+  const data = await response.json();
+
+  if (data.firstPrize.last4 === last4) {
     document.getElementById("result").innerText =
-      "You entered: " + last4;
+      "🎉 First Prize! Number ഒന്നു അടിച്ചു!";
+  } else if (data.prizesLast4[last4]) {
+    document.getElementById("result").innerText =
+      You won ${data.prizesLast4[last4].prize} prize – ₹${data.prizesLast4[last4].amount};
+  } else {
+    document.getElementById("result").innerText =
+      "No prize for this number 😔";
   }
+}
 </script>
 </html>

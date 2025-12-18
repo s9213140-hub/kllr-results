@@ -14,7 +14,14 @@
   <label>Last 4 Digits</label><br>
   <input maxlength="4" placeholder="ഉദാ: 7880"><br><br>
 
-  <button>Check Result</button>
+  <button onclick="checkResult()">Check Result</button>
+  <p id="result"></p>
+  
 
 </body>
+  <script>
+function checkResult() {
+  document.getElementById("result").innerText = "Checking result...";
+}
+</script>
 </html>

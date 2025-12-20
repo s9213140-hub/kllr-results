@@ -5,19 +5,21 @@
   <title>Kerala Lottery Result</title>
   <style>
     body {
+      background: black;
+      color: orange;
       font-family: Arial, sans-serif;
-      background: #f6c453;
-      padding: 30px;
+      padding: 20px;
     }
     input, button {
-      padding: 8px;
-      margin: 6px 0;
+      padding: 10px;
+      margin-top: 10px;
+      width: 220px;
       font-size: 16px;
     }
     #result {
-      margin-top: 15px;
+      margin-top: 20px;
+      font-size: 20px;
       font-weight: bold;
-      font-size: 18px;
     }
   </style>
 </head>
@@ -25,54 +27,49 @@
 
   <h1>Kerala Lottery Result</h1>
 
-  <label>Draw Date</label><br>
-  <input id="date" placeholder="YYYY-MM-DD"><br><br>
+  <input id="date" placeholder="YYYY-MM-DD"><br>
+  <input id="last4" placeholder="Last 4 digits"><br>
+  <button id="checkBtn">Check Result</button>
 
-  <label>Last 4 Digits</label><br>
-  <input id="last4" maxlength="4" placeholder="Eg: 7880"><br><br>
+  <div id="result">⬆️ Enter details and check</div>
 
-  <button onclick="checkResult()">Check Result</button>
+  <script>
+    document.getElementById("checkBtn").addEventListener("click", async () => {
+      const date = document.getElementById("date").value.trim();
+      const last4 = document.getElementById("last4").value.trim();
+      const resultBox = document.getElementById("result");
 
-  <div id="result"></div>
+      if (!date || !last4) {
+        resultBox.innerText = "Dateയും നമ്പറും കൊടുക്കണം";
+        return;
+      }
 
- <script>
-async function checkResult() {
-  const date = document.getElementById("date").value.trim();
-  const last4 = document.getElementById("last4").value.trim();
-  const resultBox = document.getElementById("result");
+      resultBox.innerText = "Checking result...";
 
-  if (!date || !last4) {
-    resultBox.innerText = "Please enter both date and last 4 digits.";
-    return;
-  }
+      try {
+        const res = await fetch(data/${date}.json);
+        if (!res.ok) throw new Error("No file");
 
-  const url = https://raw.githubusercontent.com/s9213140-hub/klr-results/main/data/${date}.json;
+        const data = await res.json();
 
-  try {
-    const response = await fetch(url);
-    if (!response.ok) throw new Error("No data");
+        if (data.firstPrize.last4 === last4) {
+          resultBox.innerText = "🔥 അടിച്ചു മോനെ! ഒന്നാം സമ്മാനം!";
+          return;
+        }
 
-    const data = await response.json();
+        if (data.prizesLast4[last4]) {
+          const p = data.prizesLast4[last4];
+          resultBox.innerText = 🎉 ${p.prize} – ₹${p.amount};
+          return;
+        }
 
-    // FIRST PRIZE CHECK
-    if (data.firstPrize.last4 === last4) {
-      resultBox.innerText = "🎉 ഒന്നാം സമ്മാനം അടിച്ചു!";
-      return;
-    }
+        resultBox.innerText = "😌 സവാരി ഗിരിഗിരി";
 
-    // OTHER PRIZES
-    if (data.prizesLast4[last4]) {
-      resultBox.innerText =
-        🎉 ${data.prizesLast4[last4].prize} – ₹${data.prizesLast4[last4].amount};
-      return;
-    }
+      } catch {
+        resultBox.innerText = "❌ Result ലഭ്യമല്ല";
+      }
+    });
+  </script>
 
-    resultBox.innerText = "❌ Sorry, no prize.";
-
-  } catch (err) {
-    resultBox.innerText = "Result not found for this date.";
-  }
-}
-</script>
 </body>
 </html>

@@ -35,49 +35,44 @@
 
   <div id="result"></div>
 
-  <script>
-    // SAMPLE DATA (this matches your JSON)
-    const data = {
-      "2025-12-10": {
-        firstPrizeLast4: "7880",
-        prizesLast4: {
-          "3269": "2nd Prize – ₹30,00,000",
-          "6509": "3rd Prize – ₹5,00,000",
-          "0144": "Small Prize – ₹100",
-          "0159": "Small Prize – ₹200",
-          "0097": "Small Prize – ₹500"
-        }
-      }
-    };
+ <script>
+async function checkResult() {
+  const date = document.getElementById("date").value.trim();
+  const last4 = document.getElementById("last4").value.trim();
+  const resultBox = document.getElementById("result");
 
-    function checkResult() {
-      const date = document.getElementById("date").value.trim();
-      const last4 = document.getElementById("last4").value.trim();
-      const resultBox = document.getElementById("result");
+  if (!date || !last4) {
+    resultBox.innerText = "Please enter both date and last 4 digits.";
+    return;
+  }
 
-      if (!date || !last4) {
-        resultBox.innerText = "Please enter both date and last 4 digits.";
-        return;
-      }
+  const url = https://raw.githubusercontent.com/s9213140-hub/klr-results/main/data/${date}.json;
 
-      if (!data[date]) {
-        resultBox.innerText = "No data found for this date.";
-        return;
-      }
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("No data");
 
-      if (last4 === data[date].firstPrizeLast4) {
-        resultBox.innerText = "🎉 FIRST PRIZE WINNER!";
-        return;
-      }
+    const data = await response.json();
 
-      if (data[date].prizesLast4[last4]) {
-        resultBox.innerText = "🎉 " + data[date].prizesLast4[last4];
-        return;
-      }
-
-      resultBox.innerText = "❌ Sorry, no prize for this number.";
+    // FIRST PRIZE CHECK
+    if (data.firstPrize.last4 === last4) {
+      resultBox.innerText = "🎉 ഒന്നാം സമ്മാനം അടിച്ചു!";
+      return;
     }
-  </script>
 
+    // OTHER PRIZES
+    if (data.prizesLast4[last4]) {
+      resultBox.innerText =
+        🎉 ${data.prizesLast4[last4].prize} – ₹${data.prizesLast4[last4].amount};
+      return;
+    }
+
+    resultBox.innerText = "❌ Sorry, no prize.";
+
+  } catch (err) {
+    resultBox.innerText = "Result not found for this date.";
+  }
+}
+</script>
 </body>
 </html>

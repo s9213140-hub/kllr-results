@@ -33,43 +33,45 @@
 
   <div id="result">⬆️ Enter details and check</div>
 
-  <script>
-    document.getElementById("checkBtn").addEventListener("click", async () => {
-      const date = document.getElementById("date").value.trim();
-      const last4 = document.getElementById("last4").value.trim();
-      const resultBox = document.getElementById("result");
+ <script>
+async function checkResult() {
+  const date = document.getElementById("date").value;
+  const last4 = document.getElementById("last4").value.trim();
+  const resultBox = document.getElementById("result");
 
-      if (!date || !last4) {
-        resultBox.innerText = "Dateയും നമ്പറും കൊടുക്കണം";
-        return;
-      }
+  resultBox.innerHTML = "Checking result...";
 
-      resultBox.innerText = "Checking result...";
+  try {
+    const res = await fetch(data/${date}.json);
+    if (!res.ok) {
+      resultBox.innerHTML = "❌ Result not available for this date";
+      return;
+    }
 
-      try {
-        const res = await fetch(data/${date}.json);
-        if (!res.ok) throw new Error("No file");
+    const data = await res.json();
 
-        const data = await res.json();
+    // 🥇 FIRST PRIZE (last 4 match)
+    if (data.firstPrize.last4 === last4) {
+      resultBox.innerHTML = "🎉 നമ്പർ ഒന്നു അടിച്ചു! 🥇 First Prize 🎉";
+      return;
+    }
 
-        if (data.firstPrize.last4 === last4) {
-          resultBox.innerText = "🔥 അടിച്ചു മോനെ! ഒന്നാം സമ്മാനം!";
-          return;
-        }
+    // 🎯 OTHER PRIZES (last 4)
+    if (data.prizesLast4[last4]) {
+      const prize = data.prizesLast4[last4];
+      resultBox.innerHTML =
+        🎊 Congratulations! ${prize.prize} Prize – ${prize.amount};
+      return;
+    }
 
-        if (data.prizesLast4[last4]) {
-          const p = data.prizesLast4[last4];
-          resultBox.innerText = 🎉 ${p.prize} – ₹${p.amount};
-          return;
-        }
+    // ❌ No prize
+    resultBox.innerHTML = "😔 Sorry, no prize this time";
 
-        resultBox.innerText = "😌 സവാരി ഗിരിഗിരി";
-
-      } catch {
-        resultBox.innerText = "❌ Result ലഭ്യമല്ല";
-      }
-    });
-  </script>
+  } catch (e) {
+    resultBox.innerHTML = "⚠️ Error checking result";
+  }
+}
+</script>
 
 </body>
 </html>

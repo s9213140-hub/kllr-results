@@ -33,45 +33,10 @@
 
   <div id="result">⬆️ Enter details and check</div>
 
- <script>
-async function checkResult() {
-  const date = document.getElementById("date").value;
-  const last4 = document.getElementById("last4").value.trim();
-  const resultBox = document.getElementById("result");
-
-  resultBox.innerHTML = "Checking result...";
-
-  try {
-    const res = await fetch(data/${date}.json);
-    if (!res.ok) {
-      resultBox.innerHTML = "❌ Result not available for this date";
-      return;
-    }
-
-    const data = await res.json();
-
-    // 🥇 FIRST PRIZE (last 4 match)
-    if (data.firstPrize.last4 === last4) {
-      resultBox.innerHTML = "🎉 നമ്പർ ഒന്നു അടിച്ചു! 🥇 First Prize 🎉";
-      return;
-    }
-
-    // 🎯 OTHER PRIZES (last 4)
-    if (data.prizesLast4[last4]) {
-      const prize = data.prizesLast4[last4];
-      resultBox.innerHTML =
-        🎊 Congratulations! ${prize.prize} Prize – ${prize.amount};
-      return;
-    }
-
-    // ❌ No prize
-    resultBox.innerHTML = "😔 Sorry, no prize this time";
-
-  } catch (e) {
-    resultBox.innerHTML = "⚠️ Error checking result";
-  }
+<script>
+function testClick() {
+  alert("Button is working");
 }
 </script>
-
 </body>
 </html>

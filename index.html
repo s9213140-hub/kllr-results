@@ -21,36 +21,33 @@
 
 </body>
 <script>
-async function checkResult() {
+function checkResult() {
   const date = document.getElementById("date").value;
-  const last4 = document.getElementById("last4").value;
-  const resultEl = document.getElementById("result");
 
-  resultEl.innerText = "Checking result...";
-
-  try {
-    const response = await fetch(./data/${date}.json);
-
-    if (!response.ok) {
-      throw new Error("Result file not found");
-    }
-
-    const data = await response.json();
-
-    if (data.firstPrize.last4 === last4) {
-      resultEl.innerText = "🎉 ചെറുത് ഒന്നു അടിച്ചു!";
-    } 
-    else if (data.prizesLast4[last4]) {
-      resultEl.innerText =
-        Prize won: ${data.prizesLast4[last4].prize} – ₹${data.prizesLast4[last4].amount};
-    } 
-    else {
-      resultEl.innerText = "Sawari girigiri 😌 No prize";
-    }
-
-  } catch (err) {
-    resultEl.innerText = "❌ Result not available for this date";
+  if (!date) {
+    alert("Please enter date");
+    return;
   }
+
+  const filePath = data/${date}.json;
+
+  fetch(filePath)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("JSON not found");
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log("JSON DATA:", data);
+      document.getElementById("result").innerText =
+        "Data loaded. Check console.";
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      document.getElementById("result").innerText =
+        "Result not found for this date";
+    });
 }
 </script>
 </html>

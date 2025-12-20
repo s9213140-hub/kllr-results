@@ -1,54 +1,83 @@
 <!DOCTYPE html>
-<html lang="ml">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Kerala Lottery Result</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f6c453;
+      padding: 30px;
+    }
+    input, button {
+      padding: 8px;
+      margin: 6px 0;
+      font-size: 16px;
+    }
+    #result {
+      margin-top: 15px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+  </style>
 </head>
 <body>
 
   <h1>Kerala Lottery Result</h1>
 
- <label>Draw Date</label><br>
-<input id="date" placeholder="YYYY-MM-DD"><br><br>
+  <label>Draw Date</label><br>
+  <input id="date" placeholder="YYYY-MM-DD"><br><br>
 
-<label>Last 4 Digits</label><br>
-<input id="last4" maxlength="4" placeholder="Eg: 7880"><br><br>
+  <label>Last 4 Digits</label><br>
+  <input id="last4" maxlength="4" placeholder="Eg: 7880"><br><br>
 
-<button onclick="checkResult()">Check Result</button>
+  <button onclick="checkResult()">Check Result</button>
 
-<p id="result"></p>
-  
+  <div id="result"></div>
 
-
-<script>
-function checkResult() {
-  const date = document.getElementById("date").value;
-
-  if (!date) {
-    alert("Please enter date");
-    return;
-  }
-
-  const filePath = data/${date}.json;
-
-  fetch(filePath)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error("JSON not found");
+  <script>
+    // SAMPLE DATA (this matches your JSON)
+    const data = {
+      "2025-12-10": {
+        firstPrizeLast4: "7880",
+        prizesLast4: {
+          "3269": "2nd Prize – ₹30,00,000",
+          "6509": "3rd Prize – ₹5,00,000",
+          "0144": "Small Prize – ₹100",
+          "0159": "Small Prize – ₹200",
+          "0097": "Small Prize – ₹500"
+        }
       }
-      return response.json();
-    })
-    .then(data => {
-      console.log("JSON DATA:", data);
-      document.getElementById("result").innerText =
-        "Data loaded. Check console.";
-    })
-    .catch(error => {
-      console.error("Error:", error);
-      document.getElementById("result").innerText =
-        "Result not found for this date";
-    });
-}
-</script>
-  </body>
+    };
+
+    function checkResult() {
+      const date = document.getElementById("date").value.trim();
+      const last4 = document.getElementById("last4").value.trim();
+      const resultBox = document.getElementById("result");
+
+      if (!date || !last4) {
+        resultBox.innerText = "Please enter both date and last 4 digits.";
+        return;
+      }
+
+      if (!data[date]) {
+        resultBox.innerText = "No data found for this date.";
+        return;
+      }
+
+      if (last4 === data[date].firstPrizeLast4) {
+        resultBox.innerText = "🎉 FIRST PRIZE WINNER!";
+        return;
+      }
+
+      if (data[date].prizesLast4[last4]) {
+        resultBox.innerText = "🎉 " + data[date].prizesLast4[last4];
+        return;
+      }
+
+      resultBox.innerText = "❌ Sorry, no prize for this number.";
+    }
+  </script>
+
+</body>
 </html>
